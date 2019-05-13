@@ -11,6 +11,8 @@ const Fuzzeset = require('fuzzyset.js');
 // const result = a.get("Mr Bob J Loblaw Jr");
 // console.log(result);
 
+// pdfjs.multiple_eins.pdf').then(pdf => {
+// pdfjs.ein_test.pdf').then(pdf => {
 // pdfjs.getDocument('pdf_reference_1-7.pdf').then(pdf => {
 pdfjs.getDocument('Nascar Plaza Holdings - Scott Azaroff - 2018 K1.pdf').then(pdf => {
   pdf.getPage(1).then(page => {
@@ -18,7 +20,7 @@ pdfjs.getDocument('Nascar Plaza Holdings - Scott Azaroff - 2018 K1.pdf').then(pd
     page.getAnnotations().then(x => {
       // rect(distance from left and bot):
       // [ left, bottom ,right, top ]
-      console.log(x.filter(x => x.fieldValue).map(x => ({ value: x.fieldValue, position: x.rect }) ));
+      // console.log(x.filter(x => x.fieldValue).map(x => ({ value: x.fieldValue, position: x.rect }) ));
       // console.log(x.map(x => x.fieldValue).join('\n'));
     })
     page.getTextContent().then(text => {
