@@ -99,11 +99,13 @@ async function getIds(pdfUrl){
   }
 }
 
+
 console.log(getTaxIds(url3));
 
 function getTaxIds(pdfUrl){
   return getFullText(pdfUrl)
     .then(fulltext => extractTaxIds(fulltext))
+    .catch(err => console.log(`error: ${err}`))
 }
 
 function extractTaxIds(fullText){
