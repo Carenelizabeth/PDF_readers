@@ -44,7 +44,7 @@ url4 = 'multiple_eins.pdf'
 url5 = 'brook.pdf'
 url6 = 'non_matcher.pdf'
 
-getAllText(url3)
+// console.log(getAllText(url3))
 
 function getAllText(pdfUrl){
   const patternEIN = /\d{2}\-?\d{7}/g;
@@ -74,3 +74,65 @@ function getAllText(pdfUrl){
   ).catch(e => console.log(`error ${e}`))
 }
 
+// console.log(getIds(url2));
+
+async function getIds(pdfUrl){
+
+  try{
+      await pdfjs.getDocument(pdfUrl)
+      .then(function(pdf){
+        const pagePromises = [];
+        for (let i=1; i<pdf.numPages+1; i++){
+          let page = pdf.getPage(i)
+          pagePromises.push(page.then(page =>{
+            let textContent = page.getTextContent()
+            return textContent.then(text =>
+              text.items.map(x => x.str).join(' '));
+          }))
+          console.log(pagePromises)
+        }
+        Promise.all(pagePromises).then(text => console.log(text))
+      }
+  )}
+  catch(err){
+    console.log(err)
+  }
+}
+
+console.log(getTaxIds(url3));
+
+function getTaxIds(pdfUrl){
+  return getFullText(pdfUrl)
+    .then(fulltext => extractTaxIds(fulltext))
+}
+
+function extractTaxIds(fullText){
+  const patternEIN = /\d{2}\-?\d{7}/g;
+  const patternTID = /\d{9}/g
+  const patternSSN = /\d{3}[\-?]\d{2}[\-?]\d{4}/g
+  const tax_numbers = {}
+
+  tax_numbers.tax_id = fullText.match(patternSSN);
+  tax_numbers.ein_id = fullText.match(patternEIN);
+  tax_numbers.tin_id = fullText.match(patternTID);
+  console.log(tax_numbers);
+  return tax_numbers;
+}
+
+async function getFullText(pdfUrl){
+  const pdf = await pdfjs.getDocument(pdfUrl).promise
+  const maxPages = pdf.numPages;
+  const pagePromises = [];
+  for (let i=1; i<=maxPages; i++){
+    pagePromises.push(getPageText(pdf, i))
+  }
+  const pageText = await Promise.all(pagePromises)
+  return pageText.join(' ');
+}
+
+async function getPageText(pdf, pageNumber){
+  const page = await pdf.getPage(pageNumber);
+  const text = await page.getTextContent();
+  const pageText = text.items.map(x => x.str).join(' ')
+  return pageText;
+}
