@@ -44,9 +44,9 @@ url4 = 'multiple_eins.pdf'
 url5 = 'brook.pdf'
 url6 = 'non_matcher.pdf'
 
-getAllTest(url1)
+getAllText(url3)
 
-function getAllTest(pdfUrl){
+function getAllText(pdfUrl){
   const patternEIN = /\d{2}\-?\d{7}/g;
   const patternTID = /\d{9}/g
   const patternSSN = /\d{3}[\-?]\d{2}[\-?]\d{4}/g
@@ -63,18 +63,14 @@ function getAllTest(pdfUrl){
           text.items.map(x => x.str).join(' '));
       }))
     }
-    return Promise.all(pagePromises).then(allText => {
-
+      Promise.all(pagePromises).then(allText => {
       tax_numbers.tax_id = allText.join(' ').match(patternSSN);
       tax_numbers.ein_id = allText.join(' ').match(patternEIN);
       tax_numbers.tin_id = allText.join(' ').match(patternTID);
-      console.log(tax_numbers)
+      console.log(tax_numbers);
+      return tax_numbers;
     })
-  }).catch(e => console.log(`error ${e}`))
+  }
+  ).catch(e => console.log(`error ${e}`))
 }
 
-// const string = 'PTPA0312L   08/31/18 * -6,382. 82-4200697 STADIUM TERRACE INVESTORS 2483 N CANYON RD SUITE 200 PROVO, UT 84604 E-FILE 55-4821295 MAROAN STADIUM 150 LLC 3212 SHADOWBROOK DR PROVO, UT 84604 X X PARTNERSHIP 1.069748 1.069748 1.069748 1.069748 1.134044 1.134044 AA 349. AB 81,289. 56,964. AG 6,958. Z -6,382. 0. 50,000. -6,382. 43,618. X X PARTNER 20 Schedule K-1'
-// const patternEIN = /\d{2}\-?\d{7}/g;
-
-// let found = string.match(patternEIN)
-// console.log(found);
